@@ -23,8 +23,16 @@ export const hasExistingSigningKey = () => {
 	return true;
 };
 
-export const saveSigningKey = (signingKey: string) => {
+export const saveSigningKey = async (sessionID: string, signingKey: string) => {
+	const { data: verifiedSession } = await axios.post(`${API_URL}/session/check`, { session_id: sessionID, signing_key: signingKey });
+
+	if (!hasExistingSession()) {
+		Cookies.set(SESSION_ID_IDENTIFIER, verifiedSession.data.session_id, { expires: verifiedSession?.data?.ttl });
+	}
+
 	sessionStorage.setItem(SIGNING_KEY_IDENTIFIER, signingKey);
+
+	return verifiedSession;
 };
 
 export const createSession = async (signingKey: string) => {
@@ -34,7 +42,7 @@ export const createSession = async (signingKey: string) => {
 		}
 		const { data: createdSession } = await axios.post(`${API_URL}/session/create`, { signing_key: signingKey });
 
-		Cookies.set(SESSION_ID_IDENTIFIER, createdSession.data.session_id, { expires: 1 });
+		Cookies.set(SESSION_ID_IDENTIFIER, createdSession.data.session_id, { expires: createdSession?.data?.ttl });
 		sessionStorage.setItem(SIGNING_KEY_IDENTIFIER, signingKey);
 
 		return createdSession;
@@ -44,17 +52,29 @@ export const createSession = async (signingKey: string) => {
 };
 
 export const fetchSessionDocuments = async (sessionID: string, signingKey: string) => {
-	try {
-		const { data: sessionData } = await axios.get(`${API_URL}/documents`, {
+	const { data: sessionData } = await axios.get(`${API_URL}/cleeps`, {
+		headers: {
+			"x-session-id": sessionID,
+			"x-signing-key": signingKey,
+		},
+	});
+	return sessionData;
+};
+
+export const saveDocument = async (sessionID: string, signingKey: string, document: { text: string }) => {
+	const { data: doc } = await axios.post(
+		`${API_URL}/cleeps`,
+		{
+			content: document.text,
+		},
+		{
 			headers: {
 				"x-session-id": sessionID,
 				"x-signing-key": signingKey,
 			},
-		});
-		return sessionData;
-	} catch (error) {
-		throw error;
-	}
+		}
+	);
+	return doc;
 };
 
 export const destroySession = () => {

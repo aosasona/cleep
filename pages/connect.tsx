@@ -4,7 +4,7 @@ import CustomToaster from "../components/CustomToaster";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { createSession, hasExistingSession, hasExistingSigningKey } from "../utils/connection";
+import { createSession, hasExistingSession, hasExistingSigningKey, saveSigningKey } from "../utils/connection";
 import CustomException from "../lib/error/CustomException";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
@@ -25,16 +25,19 @@ export default function ConnectPage() {
 			e.preventDefault();
 			setLoading(true);
 
+			const sessionID = router.query.sessionID as string;
+
 			if (signingKey.length < 6) {
 				toast.error("Signing key must be at least 8 characters long");
 				setLoading(false);
 				return;
 			}
 
-			const response = await createSession(signingKey);
+			const response = await saveSigningKey(sessionID, signingKey);
+
 			if (!response.success) throw new CustomException(response.message, response.code);
 		} catch (err: any) {
-			toast.error(err?.response?.data?.message || "An error occurred");
+			toast.error(err?.response?.data?.message || err?.name === "CustomException" ? err.message : "An error occurred");
 		} finally {
 			setLoading(false);
 		}
@@ -48,7 +51,7 @@ export default function ConnectPage() {
 					<Box className="w-full sm:w-2/3 md:w-2/4 xl:w-1/4" mt={30}>
 						<form className="w-full" onSubmit={handleFormSubmit}>
 							<Text size="sm" color="dark.3" align="center" mb={25}>
-								Enter a signing key or password, this is used to restrict access to your session.
+								Enter the signing key to join this session
 							</Text>
 
 							<Flex align="center" gap={6}>
@@ -59,7 +62,7 @@ export default function ConnectPage() {
 							</Flex>
 
 							<Button type="submit" variant="filled" size="lg" radius="md" mt={25} className="bg-rose-600 text-sm w-full">
-								Create Session
+								Join
 							</Button>
 						</form>
 					</Box>

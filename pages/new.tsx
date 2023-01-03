@@ -1,4 +1,4 @@
-import { Container, LoadingOverlay, Image, Flex, Text, Box, Input, Button, Notification, Alert } from "@mantine/core";
+import { Container, LoadingOverlay, Image, Flex, Text, Box, Input, Button } from "@mantine/core";
 import Layout from "../components/Layout";
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -34,7 +34,7 @@ export default function NewPage() {
 			const response = await createSession(signingKey);
 			if (!response.success) throw new CustomException(response.message, response.code);
 		} catch (err: any) {
-			toast.error(err?.response?.data?.message || "An error occurred");
+			toast.error(err?.response?.data?.message || err?.name === "CustomException" ? err.message : "An error occurred");
 		} finally {
 			setLoading(false);
 		}

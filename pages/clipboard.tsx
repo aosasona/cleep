@@ -47,6 +47,7 @@ export default function ClipboardPage() {
 		const socket = io(`${BASE_URL}`, {
 			autoConnect: true,
 			transports: ["websocket", "polling"],
+			reconnectionAttempts: 3,
 			query: {
 				session_id: sessionID,
 				signing_key: signingKey,
@@ -59,10 +60,22 @@ export default function ClipboardPage() {
 			setLoading(false);
 
 			if (!initialFetch) {
-				const { data } = await fetchSessionDocuments(sessionID, signingKey);
-				setData(data);
-				setInitialFetch(true);
+				try {
+					const { data } = await fetchSessionDocuments(sessionID, signingKey);
+					setData(data);
+					setInitialFetch(true);
+				} catch (err) {
+					toast.error("Failed to fetch session documents");
+				}
 			}
+		});
+
+		socket.on("new_cleep", (data) => {
+			setData((prev) => [...prev, data]);
+		});
+
+		socket.on("connect_error", (err) => {
+			toast.error("Failed to connect to server");
 		});
 	}, [rendered, signingKey, sessionID]);
 
