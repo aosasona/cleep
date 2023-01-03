@@ -17,6 +17,7 @@ import NewDocument from "../components/NewDocument";
 export default function ClipboardPage() {
 	const router = useRouter();
 
+	const [reconnectCount, setReconnectCount] = useState<number>(0);
 	const [showAddModal, setShowAddModal] = useState<boolean>(false);
 	const [opened, setOpened] = useState<boolean>(false);
 	const [rendered, setRendered] = useState<boolean>(false);
@@ -70,13 +71,29 @@ export default function ClipboardPage() {
 			}
 		});
 
-		socket.on("new_cleep", (data) => {
-			setData((prev) => [...prev, data]);
+		socket.on("new_cleep", (incomingData: DocumentType) => {
+			const containsData = data.find((item) => item.id == incomingData.id);
+			if (!containsData) {
+				handleNewCleep(incomingData);
+			}
 		});
 
 		socket.on("connect_error", (err) => {
-			toast.error("Failed to connect to server");
+			setReconnectCount((prev) => prev + 1);
+
+			if (reconnectCount >= 3) {
+				toast.error("Failed to connect to server");
+				setReconnectCount(0);
+			}
 		});
+
+		socket.on("reconnect", () => {
+			toast.success("Reconnected to server");
+		});
+
+		return () => {
+			socket.disconnect();
+		};
 	}, [rendered, signingKey, sessionID]);
 
 	const destroy = () => {
@@ -85,6 +102,10 @@ export default function ClipboardPage() {
 	};
 
 	const connectionUrl = `${SITE_URL}/connect?sessionID=${sessionID}`;
+
+	const handleNewCleep = (data: DocumentType) => {
+		setData((prev) => [data, ...prev]);
+	};
 
 	const handleCopy = (text: string) => {
 		try {
@@ -111,8 +132,8 @@ export default function ClipboardPage() {
 				</button>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl-grid-cols-4 gap-4 mt-6">
-					{data.map((doc) => (
-						<div key={doc.id} className="bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer" onClick={() => setFocusedItem(doc)}>
+					{data.map((doc, index) => (
+						<div key={index} className="bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer" onClick={() => setFocusedItem(doc)}>
 							{doc.type === "text" ? <p className="text-neutral-400 text-sm text-ellipsis">{doc.content?.length > 150 ? doc.content.substring(0, 150) + "..." : doc.content}</p> : <img src={doc.content} alt={doc.id} className="aspect-video max-w-full rounded-sm" />}
 						</div>
 					))}
