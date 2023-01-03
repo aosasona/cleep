@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import {
-	createSession,
+	destroySession,
 	hasExistingSession,
 	hasExistingSigningKey,
 	saveSigningKey,
@@ -53,13 +53,18 @@ export default function ConnectPage() {
 				throw new CustomException(response.message, response.code);
 		} catch (err: any) {
 			toast.error(
-				err?.response?.data?.message || err?.name === "CustomException"
+				err?.name?.toLowerCase() == "customexception"
 					? err.message
 					: "An error occurred"
 			);
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const destroy = () => {
+		destroySession();
+		router.replace("/new");
 	};
 
 	return (
@@ -103,6 +108,12 @@ export default function ConnectPage() {
 								Join
 							</Button>
 						</form>
+
+						<div className="flex justify-center mt-6">
+							<button onClick={destroy} className="text-xs text-rose-600 p-2">
+								Clear Session
+							</button>
+						</div>
 					</Box>
 				</Flex>
 			</Container>

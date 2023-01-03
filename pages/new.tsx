@@ -45,7 +45,7 @@ export default function NewPage() {
 				throw new CustomException(response.message, response.code);
 		} catch (err: any) {
 			toast.error(
-				err?.response?.data?.message || err?.name === "CustomException"
+				err?.name?.toLowerCase() == "customexception"
 					? err.message
 					: "An error occurred"
 			);
@@ -75,7 +75,7 @@ export default function NewPage() {
 									py={8}
 									variant="unstyled"
 									onChange={(e) => setSigningKey(e.currentTarget.value)}
-									className="w-full placeholder-neutral-700 rounded-lg"
+									className="w-full placeholder-neutral-700 rounded-lg mb-4"
 								/>
 								<Button
 									onClick={() => setShowKey(!showKey)}
@@ -84,9 +84,6 @@ export default function NewPage() {
 									{showKey ? <FiEyeOff /> : <FiEye />}
 								</Button>
 							</Flex>
-							<Text size="xs" color="dark.6" align="left" mt={5} mb={25} px={4}>
-								Leave it blank to use a default one.
-							</Text>
 							<Button
 								type="submit"
 								variant="filled"

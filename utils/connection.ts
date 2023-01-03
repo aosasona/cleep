@@ -24,10 +24,15 @@ export const hasExistingSigningKey = () => {
 };
 
 export const saveSigningKey = async (sessionID: string, signingKey: string) => {
-	const { data: verifiedSession } = await axios.post(`${API_URL}/session/check`, { session_id: sessionID, signing_key: signingKey });
+	const { data: verifiedSession } = await axios.post(
+		`${API_URL}/session/check`,
+		{ session_id: sessionID, signing_key: signingKey }
+	);
 
 	if (!hasExistingSession()) {
-		Cookies.set(SESSION_ID_IDENTIFIER, verifiedSession.data.session_id, { expires: verifiedSession?.data?.ttl });
+		Cookies.set(SESSION_ID_IDENTIFIER, verifiedSession.data.session_id, {
+			expires: verifiedSession?.data?.ttl,
+		});
 	}
 
 	sessionStorage.setItem(SIGNING_KEY_IDENTIFIER, signingKey);
@@ -40,9 +45,14 @@ export const createSession = async (signingKey: string) => {
 		if (hasExistingSession()) {
 			return;
 		}
-		const { data: createdSession } = await axios.post(`${API_URL}/session/create`, { signing_key: signingKey });
+		const { data: createdSession } = await axios.post(
+			`${API_URL}/session/create`,
+			{ signing_key: signingKey }
+		);
 
-		Cookies.set(SESSION_ID_IDENTIFIER, createdSession.data.session_id, { expires: createdSession?.data?.ttl });
+		Cookies.set(SESSION_ID_IDENTIFIER, createdSession.data.session_id, {
+			expires: createdSession?.data?.ttl,
+		});
 		sessionStorage.setItem(SIGNING_KEY_IDENTIFIER, signingKey);
 
 		return createdSession;
@@ -51,7 +61,10 @@ export const createSession = async (signingKey: string) => {
 	}
 };
 
-export const fetchSessionDocuments = async (sessionID: string, signingKey: string) => {
+export const fetchSessionDocuments = async (
+	sessionID: string,
+	signingKey: string
+) => {
 	const { data: sessionData } = await axios.get(`${API_URL}/cleeps`, {
 		headers: {
 			"x-session-id": sessionID,
@@ -61,7 +74,11 @@ export const fetchSessionDocuments = async (sessionID: string, signingKey: strin
 	return sessionData;
 };
 
-export const saveDocument = async (sessionID: string, signingKey: string, document: { text: string }) => {
+export const saveDocument = async (
+	sessionID: string,
+	signingKey: string,
+	document: { text: string }
+) => {
 	const { data: doc } = await axios.post(
 		`${API_URL}/cleeps`,
 		{
