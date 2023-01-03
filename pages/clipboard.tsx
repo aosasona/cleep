@@ -5,7 +5,7 @@ import { destroySession, fetchSessionDocuments, getSessionData, hasExistingSessi
 import { useRouter } from "next/router";
 import { BASE_URL, SITE_URL } from "../constants/url";
 import { io } from "socket.io-client";
-import { BsPlus } from "react-icons/bs";
+import { BsPlus, BsX } from "react-icons/bs";
 import QRCode from "react-qr-code";
 import { DocumentType } from "../types/document";
 import { toast } from "react-hot-toast";
@@ -119,14 +119,14 @@ export default function ClipboardPage() {
 	return (
 		<Layout title="Cleep">
 			<Container pt={25} className="relative min-h-screen">
-				<div className="flex justify-between items-center">
-					<h1 className="text-3xl font-medium">Clipboard</h1>
-					<Button variant="filled" size="sm" radius="md" className="bg-rose-600 text-xs" onClick={destroy}>
-						Close
+				<div className="fixed top-0 left-0 w-screen bg-black bg-opacity-50 backdrop-blur-lg flex justify-between items-center py-5 px-5">
+					<h1 className="text-3xl font-medium">Cleep</h1>
+					<Button variant="filled" size="sm" radius="md" className="bg-rose-600 text-xs p-2" onClick={destroy}>
+						<BsX size={20} />
 					</Button>
 				</div>
 
-				<button onClick={() => setOpened(true)} className="w-full text-blue-600 bg-blue-600 bg-opacity-25 hover:bg-opacity-10 flex items-center py-6 px-4 mt-8 rounded-lg transition-all">
+				<button onClick={() => setOpened(true)} className="w-full text-blue-600 text-sm bg-blue-600 bg-opacity-25 hover:bg-opacity-10 flex items-center p-4 mt-[8vh] rounded-lg transition-all">
 					<BsPlus size={28} />
 					<p>Connect a new device</p>
 				</button>
@@ -139,7 +139,7 @@ export default function ClipboardPage() {
 					))}
 				</div>
 
-				<button className="bg-rose-600 absolute bottom-6 right-4 p-3 rounded-full" onClick={() => setShowAddModal(true)}>
+				<button className="bg-rose-600 fixed bottom-6 right-4 p-3 rounded-full" onClick={() => setShowAddModal(true)}>
 					<BsPlus size={36} />
 				</button>
 			</Container>

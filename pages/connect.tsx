@@ -1,10 +1,24 @@
-import { Container, Input, Image, Box, Text, Button, Flex, LoadingOverlay } from "@mantine/core";
+import {
+	Container,
+	Input,
+	Image,
+	Box,
+	Text,
+	Button,
+	Flex,
+	LoadingOverlay,
+} from "@mantine/core";
 import Layout from "../components/Layout";
 import CustomToaster from "../components/CustomToaster";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { createSession, hasExistingSession, hasExistingSigningKey, saveSigningKey } from "../utils/connection";
+import {
+	createSession,
+	hasExistingSession,
+	hasExistingSigningKey,
+	saveSigningKey,
+} from "../utils/connection";
 import CustomException from "../lib/error/CustomException";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
@@ -35,9 +49,14 @@ export default function ConnectPage() {
 
 			const response = await saveSigningKey(sessionID, signingKey);
 
-			if (!response.success) throw new CustomException(response.message, response.code);
+			if (!response.success)
+				throw new CustomException(response.message, response.code);
 		} catch (err: any) {
-			toast.error(err?.response?.data?.message || err?.name === "CustomException" ? err.message : "An error occurred");
+			toast.error(
+				err?.response?.data?.message || err?.name === "CustomException"
+					? err.message
+					: "An error occurred"
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -47,7 +66,7 @@ export default function ConnectPage() {
 		<Layout title="Join Cleep Session">
 			<Container mt={55}>
 				<Flex direction="column" align="center">
-					<Image src="/logo.png" alt="Cleep logo" width={60} radius="lg" />
+					<Image src="/logo.png" alt="Cleep logo" width={70} radius="lg" />
 					<Box className="w-full sm:w-2/3 md:w-2/4 xl:w-1/3" mt={30}>
 						<form className="w-full" onSubmit={handleFormSubmit}>
 							<Text size="sm" color="dark.3" align="center" mb={25}>
@@ -55,13 +74,32 @@ export default function ConnectPage() {
 							</Text>
 
 							<Flex align="center" gap={6}>
-								<Input type={showKey ? "text" : "password"} value={signingKey} bg="dark.8" px={14} py={8} variant="unstyled" onChange={(e) => setSigningKey(e.currentTarget.value)} className="w-full placeholder-neutral-800 text-white rounded-lg" />
-								<Button onClick={() => setShowKey(!showKey)} className="hover:bg-transparent">
+								<Input
+									type={showKey ? "text" : "password"}
+									value={signingKey}
+									bg="dark.8"
+									px={14}
+									py={8}
+									variant="unstyled"
+									onChange={(e) => setSigningKey(e.currentTarget.value)}
+									className="w-full placeholder-neutral-800 text-white rounded-lg"
+								/>
+								<Button
+									onClick={() => setShowKey(!showKey)}
+									className="hover:bg-transparent"
+								>
 									{showKey ? <FiEyeOff /> : <FiEye />}
 								</Button>
 							</Flex>
 
-							<Button type="submit" variant="filled" size="lg" radius="md" mt={25} className="bg-rose-600 text-sm w-full">
+							<Button
+								type="submit"
+								variant="filled"
+								size="lg"
+								radius="md"
+								mt={25}
+								className="bg-rose-600 text-sm w-full"
+							>
 								Join
 							</Button>
 						</form>
