@@ -122,7 +122,7 @@ export default function ClipboardPage() {
 				<div className="flex justify-between items-center">
 					<h1 className="text-3xl font-medium">Clipboard</h1>
 					<Button variant="filled" size="sm" radius="md" className="bg-rose-600 text-xs" onClick={destroy}>
-						Destroy session
+						Close
 					</Button>
 				</div>
 

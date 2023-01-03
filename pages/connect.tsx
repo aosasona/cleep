@@ -48,7 +48,7 @@ export default function ConnectPage() {
 			<Container mt={55}>
 				<Flex direction="column" align="center">
 					<Image src="/logo.png" alt="Cleep logo" width={60} radius="lg" />
-					<Box className="w-full sm:w-2/3 md:w-2/4 xl:w-1/4" mt={30}>
+					<Box className="w-full sm:w-2/3 md:w-2/4 xl:w-1/3" mt={30}>
 						<form className="w-full" onSubmit={handleFormSubmit}>
 							<Text size="sm" color="dark.3" align="center" mb={25}>
 								Enter the signing key to join this session

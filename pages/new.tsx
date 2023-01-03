@@ -45,7 +45,7 @@ export default function NewPage() {
 			<Container mt={55}>
 				<Flex direction="column" align="center">
 					<Image src="/logo.png" alt="Cleep logo" width={50} radius="lg" />
-					<Box className="w-full sm:w-2/3 md:w-2/4 xl:w-1/4" mt={30}>
+					<Box className="w-full sm:w-2/3 md:w-2/4 xl:w-1/3" mt={30}>
 						<form className="w-full" onSubmit={handleFormSubmit}>
 							<Text size="sm" color="dark.3" align="center" mb={25}>
 								Enter a signing key or password, this is used to restrict access to your session.
