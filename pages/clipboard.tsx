@@ -111,6 +111,7 @@ export default function ClipboardPage() {
 		})
 
 		socket.on("reconnect", () => {
+			setConnected(true);
 			toast.success("Reconnected to server");
 		});
 
@@ -163,8 +164,8 @@ export default function ClipboardPage() {
 					<p>Connect a new device</p>
 				</button>
 
-				<div className="flex items-center gap-2 text-xs bg-neutral-900 bg-opacity-60 text-neutral-400 rounded-lg px-3 py-2">
-					<p>{sessionID || ""}</p> <div className="w-2 h-2 rounded-full" style={{ backgroundColor: connected ? "green" : "red"  }} />
+				<div className="w-max flex items-center gap-2 text-xs bg-neutral-900 bg-opacity-80 text-neutral-400 rounded-lg px-3 py-2 mt-4">
+					<p>{sessionID || ""}</p> <div className="w-3 h-3 rounded-full" style={{ backgroundColor: connected ? "green" : "red"  }} />
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl-grid-cols-4 gap-4 mt-6">
@@ -173,12 +174,14 @@ export default function ClipboardPage() {
 							key={index}
 							className="bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer"
 							onClick={() => setFocusedItem(doc)}
+							onDoubleClick={() => handleCopy(doc.content)}
 						>
 							{doc.type === "text" ? (
 								<p className="text-neutral-400 text-sm text-ellipsis">
 									{doc.content?.length > 150
 										? doc.content.substring(0, 150) + "..."
-										: doc.content}
+										: doc.content
+									}
 								</p>
 							) : (
 								<img
