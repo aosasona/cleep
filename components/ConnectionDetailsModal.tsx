@@ -3,11 +3,12 @@ import QRCode from "react-qr-code";
 
 interface ConnectionDetailsModalProps {
 	opened: boolean;
-	setOpened: (opened: boolean) => void;
 	connectionUrl: string;
+	setOpened: (opened: boolean) => void;
+	handleCopy: (text: string) => void;
 }
 
-export default function ConnectionDetailsModal({ opened, setOpened, connectionUrl }: ConnectionDetailsModalProps) {
+export default function ConnectionDetailsModal({ opened, setOpened, connectionUrl, handleCopy }: ConnectionDetailsModalProps) {
 	return (
 		<Modal opened={opened} onClose={() => setOpened(false)} title="Connect">
 			<Flex direction="column" align="center" gap={30}>
@@ -20,6 +21,8 @@ export default function ConnectionDetailsModal({ opened, setOpened, connectionUr
 						{connectionUrl}
 					</Text>
 				</Box>
+
+				<button onClick={() => handleCopy(connectionUrl)} className="w-full text-sm text-rose-600 text-center font-medium">Copy URL</button>
 			</Flex>
 		</Modal>
 	);

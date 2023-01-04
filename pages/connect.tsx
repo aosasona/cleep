@@ -31,6 +31,8 @@ export default function ConnectPage() {
 	if (typeof window !== "undefined") {
 		if (hasExistingSession() && hasExistingSigningKey()) {
 			router.replace("/clipboard");
+		} else if(hasExistingSession()) {
+			destroySession()
 		}
 	}
 

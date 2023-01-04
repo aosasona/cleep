@@ -33,6 +33,7 @@ export default function ClipboardPage() {
 	const router = useRouter();
 
 	const [reconnectCount, setReconnectCount] = useState<number>(0);
+	const [connected, setConnected] = useState<boolean>(false);
 	const [showAddModal, setShowAddModal] = useState<boolean>(false);
 	const [opened, setOpened] = useState<boolean>(false);
 	const [rendered, setRendered] = useState<boolean>(false);
@@ -75,6 +76,7 @@ export default function ClipboardPage() {
 
 		socket.on("connect", async () => {
 			setLoading(false);
+			setConnected(true);
 
 			if (!initialFetch) {
 				try {
@@ -95,6 +97,7 @@ export default function ClipboardPage() {
 		});
 
 		socket.on("connect_error", (err) => {
+			setConnected(false);
 			setReconnectCount((prev) => prev + 1);
 
 			if (reconnectCount >= 3) {
@@ -103,7 +106,12 @@ export default function ClipboardPage() {
 			}
 		});
 
+		socket.on("disconnected", () => {
+			setConnected(false);
+		})
+
 		socket.on("reconnect", () => {
+			setConnected(true);
 			toast.success("Reconnected to server");
 		});
 
@@ -156,18 +164,23 @@ export default function ClipboardPage() {
 					<p>Connect a new device</p>
 				</button>
 
+				<div className="fixed bottom-6 left-4 w-max flex items-center gap-2 text-xs bg-neutral-900 bg-opacity-80 backdrop-blur-lg text-neutral-400 rounded-lg px-3 py-2 mt-4">
+					<div className="w-3 h-3 rounded-full" style={{ backgroundColor: connected ? "green" : "red"  }} />
+				</div>
+
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl-grid-cols-4 gap-4 mt-6">
 					{data.map((doc, index) => (
 						<div
 							key={index}
-							className="bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer"
+							className="w-full bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer overflow-hidden"
 							onClick={() => setFocusedItem(doc)}
 						>
 							{doc.type === "text" ? (
-								<p className="text-neutral-400 text-sm text-ellipsis">
+								<p className="w-full text-neutral-400 text-sm text-ellipsis whitespace-pre-line">
 									{doc.content?.length > 150
 										? doc.content.substring(0, 150) + "..."
-										: doc.content}
+										: doc.content
+									}
 								</p>
 							) : (
 								<img
@@ -203,6 +216,7 @@ export default function ClipboardPage() {
 				opened={opened}
 				setOpened={setOpened}
 				connectionUrl={connectionUrl}
+				handleCopy={handleCopy}
 			/>
 			<CustomToaster />
 			<LoadingOverlay visible={loading} overlayBlur={8} overlayOpacity={0.15} />
