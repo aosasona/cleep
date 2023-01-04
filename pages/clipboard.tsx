@@ -172,11 +172,11 @@ export default function ClipboardPage() {
 					{data.map((doc, index) => (
 						<div
 							key={index}
-							className="w-full bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer whitespace-pre-wrap"
+							className="w-full bg-neutral-900 bg-opacity-60 rounded-lg p-4 hover:border border-rose-600 transition-all cursor-pointer whitespace-normal"
 							onClick={() => setFocusedItem(doc)}
 						>
 							{doc.type === "text" ? (
-								<p className="text-neutral-400 text-sm text-ellipsis whitespace-pre-wrap">
+								<p className="w-full text-neutral-400 text-sm text-ellipsis whitespace-normal">
 									{doc.content?.length > 150
 										? doc.content.substring(0, 150) + "..."
 										: doc.content
