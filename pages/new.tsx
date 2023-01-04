@@ -75,7 +75,7 @@ export default function NewPage() {
 									py={8}
 									variant="unstyled"
 									onChange={(e) => setSigningKey(e.currentTarget.value)}
-									className="w-full placeholder-neutral-700 rounded-lg mb-4"
+									className="w-full placeholder-neutral-700 text-base rounded-lg mb-4"
 								/>
 								<Button
 									onClick={() => setShowKey(!showKey)}

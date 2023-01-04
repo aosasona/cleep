@@ -87,7 +87,7 @@ export default function ConnectPage() {
 									py={8}
 									variant="unstyled"
 									onChange={(e) => setSigningKey(e.currentTarget.value)}
-									className="w-full placeholder-neutral-800 text-white rounded-lg"
+									className="w-full placeholder-neutral-800 text-base text-white rounded-lg"
 								/>
 								<Button
 									onClick={() => setShowKey(!showKey)}
