@@ -33,6 +33,7 @@ export default function ClipboardPage() {
 	const router = useRouter();
 
 	const [reconnectCount, setReconnectCount] = useState<number>(0);
+	const [connected, setConnected] = useState<boolean>(false);
 	const [showAddModal, setShowAddModal] = useState<boolean>(false);
 	const [opened, setOpened] = useState<boolean>(false);
 	const [rendered, setRendered] = useState<boolean>(false);
@@ -75,6 +76,7 @@ export default function ClipboardPage() {
 
 		socket.on("connect", async () => {
 			setLoading(false);
+			setConnected(true);
 
 			if (!initialFetch) {
 				try {
@@ -95,6 +97,7 @@ export default function ClipboardPage() {
 		});
 
 		socket.on("connect_error", (err) => {
+			setConnected(false);
 			setReconnectCount((prev) => prev + 1);
 
 			if (reconnectCount >= 3) {
@@ -102,6 +105,10 @@ export default function ClipboardPage() {
 				setReconnectCount(0);
 			}
 		});
+
+		socket.on("disconnected", () => {
+			setConnected(false);
+		})
 
 		socket.on("reconnect", () => {
 			toast.success("Reconnected to server");
@@ -155,6 +162,10 @@ export default function ClipboardPage() {
 					<BsPlus size={28} />
 					<p>Connect a new device</p>
 				</button>
+
+				<div className="flex items-center gap-2 text-xs bg-neutral-900 bg-opacity-60 text-neutral-400 rounded-lg px-3 py-2">
+					<p>{sessionID || ""}</p> <div className="w-2 h-2 rounded-full" style={{ backgroundColor: connected ? "green" : "red"  }} />
+				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl-grid-cols-4 gap-4 mt-6">
 					{data.map((doc, index) => (
