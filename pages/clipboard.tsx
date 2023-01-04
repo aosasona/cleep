@@ -176,7 +176,7 @@ export default function ClipboardPage() {
 							onClick={() => setFocusedItem(doc)}
 						>
 							{doc.type === "text" ? (
-								<p className="text-neutral-400 text-sm text-ellipsis">
+								<p className="text-neutral-400 text-sm text-ellipsis whitespace-pre-wrap">
 									{doc.content?.length > 150
 										? doc.content.substring(0, 150) + "..."
 										: doc.content
